@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" integrity="sha512-uKQ39gEGiyUJl4AI6L+ekBdGKpGw4xJ55+xyJG7YFlJokPNYegn9KwQ3P8A7aFQAUtUsAQHep+d/lrGqrbPIDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        body{
+            margin : 0;
+            padding : 0;
+            background-color: rgb(64, 54, 70);
+            color : rgb(230, 241, 240);
+            display: flex;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .side-bar{
+            display : flex;
+            width : 320px;
+            padding: 12px;
+            height:  100vh;
+            flex-direction: column;
+            background-color: rgb(40, 40, 51);
+            
+        }
+        .output{
+            text-align: left;
+            padding: 3px;
+            margin : 10px;
+        }
+        .main { 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            align-content: center;
+            text-align: center;
+            width : 100%;
+        }
+        #inp_div{
+            display: flex;
+            flex-direction: column;
+           
+            align-items: center;
+            align-content: center;
+            text-align: center;
+            width : 100%;
+        }
+        .inp{
+            position: absolute;
+            bottom : 30px;
+            width : 70%;
+            height : 34px;
+            font-size: large;
+            border-radius: 10px;
+            border : none;
+        }
+        .inp:focus {
+            outline : none;
+        }
+        #submit{
+            position: absolute;
+            bottom : 34px;
+            right : 20px;
+            font-size: 28px;
+        }
+        p{
+            font-size: 18px;
+            font-weight: bold;
+
+        }
+        #vois{
+            position : absolute;
+            right : 75px;
+            bottom : 100px;
+            width: 60px;
+            height : 60px;
+            border-radius: 50%;
+            font-size: larger;
+            border : none
+        }
+        
+        @media screen and (min-width : 350px) and (max-width : 650px) {
+            body{
+                width : 100%;
+            }
+            .side-bar {
+                display: none;
+            }
+            #vois{
+                width : 50px;
+                height : 50px;
+                right : 15px;
+                bottom : 55px;
+            }
+            .inp{
+                width : 90%;
+                bottom : 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="side-bar">
+        <div class="history">
+            <h1>History ></h1>
+        <div class="nav">
+        </div>
+</div>
+    </section>
+    <section class="main">
+        <p class="output"></p>
+        <div id="inp_div">
+            <input type="text" name="data" id="" class="inp">
+            <button id="vois" onclick="Voice()"><i class="fa-solid fa-microphone"></i></button>
+        </div>
+    </section>
+
+    <script>
+const apiKey = "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"
+const output = document.querySelector('.output')
+const input = document.querySelector('.inp');
+const nav = document.querySelector('.nav')
+async function getMsg(){
+    console.log('clicked')
+    output.textContent = "Loading..."
+
+    const res = await fetch('https://api.openai.com/v1/chat/completions',{
+        method : 'POST',
+        headers : {
+            'Authorization' : `Bearer ${apiKey}`,
+            'Content-Type' : 'application/json'
+        },body : JSON.stringify({
+            model : "gpt-3.5-turbo",
+            messages : [{role:"user",content: `${input.value}`}],
+            max_tokens : 1000
+        })
+    })
+    const data = await res.json()
+    console.log(data)
+    output.textContent = data.choices[0].message.content
+    if(data.choices[0].message.content){
+        const p = document.createElement('p')
+        p.textContent = input.value;
+        p.addEventListener('click',()=>{
+            input.value = p.textContent
+            getMsg()
+        })
+        nav.append(p)
+    }
+}
+input.addEventListener('keydown',(e)=>{
+    if(e.keyCode === 13){
+        getMsg()
+    }
+    e.preventDefault()
+})
+
+let Voice = ()=>{
+    var speech = true;
+    window.SpeechRecognition = window.webkitSpeechRecognition;
+    const recog = new SpeechRecognition();
+    recog.addEventListener('result',(e)=>{
+        const transcript = Array.from(e.results)
+        .map(result => result[0])
+        .map(result => result.transcript)
+        input.value = transcript;
+        console.log(transcript)
+        getMsg()
+    })
+    if(speech === true){
+        recog.start()
+    } 
+}
+    </script>
+</body>
+</html>
