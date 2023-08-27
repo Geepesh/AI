@@ -5,8 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" integrity="sha512-uKQ39gEGiyUJl4AI6L+ekBdGKpGw4xJ55+xyJG7YFlJokPNYegn9KwQ3P8A7aFQAUtUsAQHep+d/lrGqrbPIDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <style>
         body{
             margin : 0;
@@ -29,6 +28,7 @@
             text-align: left;
             padding: 3px;
             margin : 10px;
+            overflow-y: auto;
         }
         .main { 
             display: flex;
@@ -118,7 +118,7 @@
     </section>
 
     <script>
-const apiKey = "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"
+const apiKey = "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"
 const output = document.querySelector('.output')
 const input = document.querySelector('.inp');
 const nav = document.querySelector('.nav')
@@ -134,7 +134,7 @@ async function getMsg(){
         },body : JSON.stringify({
             model : "gpt-3.5-turbo",
             messages : [{role:"user",content: `${input.value}`}],
-            max_tokens : 1000
+            max_tokens : 400
         })
     })
     const data = await res.json()
